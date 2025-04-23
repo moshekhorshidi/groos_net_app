@@ -1,4 +1,4 @@
-io
+io==25.0.1
 datetime
 numpy
 streamlit==1.44.1
