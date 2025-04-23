@@ -4,4 +4,4 @@ pandas
 plotly
 openpyxl
 numpy
-app-functions
+python-dateutil
