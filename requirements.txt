@@ -1,9 +1,7 @@
-io==25.0.1
-datetime
+streamlit
+streamlit-option-menu
+pandas
+plotly
+openpyxl
 numpy
-streamlit==1.44.1
-streamlit_option_menu==0.4.0
-pandas==2.2.3
-plotly==6.0.1
-openpyxl==3.1.5
-python-dateutil==2.8.2
+app-functions
