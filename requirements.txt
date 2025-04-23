@@ -3,3 +3,8 @@ streamlit_option_menu
 pandas
 plotly
 openpyxl
+re
+dateutil
+io
+datetime
+numpy
