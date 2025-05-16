@@ -29,20 +29,21 @@ def load_data(file):
             encodings_to_try = ["ISO-8859-8", "utf-8", "ISO-8859-1", "latin1"]
             for encoding in encodings_to_try:
                 try:
-                    data = pd.read_csv(file, encoding=encoding)
+                    # Read all columns as strings initially to prevent automatic date parsing
+                    data = pd.read_csv(file, encoding=encoding, dtype=str)
                     if not data.empty:
                         break
                 except (UnicodeDecodeError, pd.errors.EmptyDataError):
                     continue
         elif filename.endswith(('.xls', '.xlsx')):
-            # Read Excel files
-            data = pd.read_excel(file)
+            # Read Excel files with all columns as strings
+            data = pd.read_excel(file, dtype=str)
         elif filename.endswith('.txt'):
             # Assume text files are structured as CSV
             encodings_to_try = ["utf-8", "ISO-8859-1", "latin1"]
             for encoding in encodings_to_try:
                 try:
-                    data = pd.read_csv(file, encoding=encoding, delimiter="\t")
+                    data = pd.read_csv(file, encoding=encoding, delimiter="\t", dtype=str)
                     if not data.empty:
                         break
                 except (UnicodeDecodeError, pd.errors.EmptyDataError):
@@ -136,3 +137,32 @@ def export_to_excel(samples_dict):
                 for category, data in samples_dict.items():
                     data.to_excel(writer, sheet_name=category, index=False)
             return output.getvalue()
+
+def extract_date_components(df, date_columns):
+    """
+    Extract year and month from date columns and add them as new columns.
+    
+    Args:
+        df (pd.DataFrame): Input dataframe
+        date_columns (list): List of column names containing dates
+        
+    Returns:
+        pd.DataFrame: Dataframe with added year and month columns
+    """
+    result_df = df.copy()
+    
+    for date_col in date_columns:
+        if date_col in df.columns:
+            # Create year column
+            year_col = f"{date_col}_Year"
+            result_df[year_col] = pd.to_datetime(df[date_col]).dt.year
+            
+            # Create month column
+            month_col = f"{date_col}_Month"
+            result_df[month_col] = pd.to_datetime(df[date_col]).dt.month
+            
+            # Add month name for better readability
+            month_name_col = f"{date_col}_Month_Name"
+            result_df[month_name_col] = pd.to_datetime(df[date_col]).dt.strftime('%B')
+    
+    return result_df
